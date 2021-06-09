@@ -39,9 +39,73 @@ perso.style.height = "30px";
 perso.style.backgroundColor = "red";
 perso.style.border = "solid 2px black";
 perso.style.borderRadius = "20px";
+perso.setAttribute("id", "perso");
 screen.appendChild(perso);
 
 root.appendChild(screen);
 
-
 // Make the character move and jump!
+let jumping = false;
+
+document.addEventListener('keydown', (event) => {
+    let positionX = parseInt((perso.style.left).substring(0, (perso.style.left).length - 2))
+    let positionY = parseInt((perso.style.bottom).substring(0, (perso.style.bottom).length - 2))
+    // go left
+    if (event.code == 'ArrowLeft') {
+        // the ball fall on the floor if it is on the box
+        if (positionX < 570 && positionY == 135) {
+            let interval2 = window.setInterval(function(){
+                positionY --;
+                perso.style.bottom = positionY;
+                if (positionY == 12){
+                    clearInterval(interval2)
+                }
+            }, 5);
+        }
+        if (positionX >= 5) {
+            positionX = (positionX - 5).toString() + "px";
+            perso.style.left = positionX;
+        }
+    };
+    // go right
+    if (event.code == 'ArrowRight') {
+        // the ball fall on the floor if it is on the box
+        if (positionX > 662 && positionY == 135) {
+            let interval2 = window.setInterval(function(){
+                positionY --;
+                perso.style.bottom = positionY;
+                if (positionY == 12){
+                    clearInterval(interval2)
+                }
+            }, 5);
+        }
+        if (positionX <= 663) {
+            positionX = (positionX + 5).toString() + "px";
+            perso.style.left = positionX;
+        }
+    };
+    // jump
+    // to jump & move in the same time, press jump first, then move r/l when the ball is in the air.
+    if (event.code == 'Space') {
+        if (!jumping) {
+            jumping = true
+            let interval = window.setInterval(function(){
+                positionY ++;
+                perso.style.bottom = positionY;
+            }, 5);
+            window.setTimeout (function(){
+                window.clearInterval(interval);
+                let interval2 = window.setInterval(function(){
+                    positionY --;
+                    perso.style.bottom = positionY;
+                    // the ball stay on the box vs on the floor depending on position on X axis.
+                    if (((positionX >= 570 && positionX <=660 ) && positionY == 135) 
+                    || ((positionX < 570 || positionX > 660) && positionY == 12)){
+                        clearInterval(interval2)
+                        jumping = false
+                    }
+                }, 5);
+            }, 750);
+        }
+    };
+});
